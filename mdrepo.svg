@@ -1,0 +1,804 @@
+digraph "MDRepo" {
+  graph [rankdir=LR, fontname="Helvetica", nodesep=0.4, ranksep=1.0, label="MDRepo", labelloc=t, fontsize=16];
+  node [shape=plain, fontname="Helvetica", fontsize=10];
+  edge [dir=both, arrowtail=crowodot, color="#555555", fontname="Helvetica", fontsize=9];
+
+  "public.account_emailaddress" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.account_emailaddress</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">email* <FONT COLOR="#666666">CHARACTER VARYING(254)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">verified* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">primary* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> user_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.account_emailconfirmation" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.account_emailconfirmation</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">created* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">sent <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> key* <FONT COLOR="#666666">CHARACTER VARYING(64)</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> email_address_id* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.auth_group" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.auth_group</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> name* <FONT COLOR="#666666">CHARACTER VARYING(150)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.auth_group_permissions" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.auth_group_permissions</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> group_id* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> permission_id* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.auth_permission" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.auth_permission</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">name* <FONT COLOR="#666666">CHARACTER VARYING(255)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> content_type_id* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">codename* <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.django_admin_log" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.django_admin_log</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">action_time* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">object_id <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">object_repr* <FONT COLOR="#666666">CHARACTER VARYING(200)</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">action_flag* <FONT COLOR="#666666">SMALLINT</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">change_message* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> content_type_id <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> user_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.django_content_type" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.django_content_type</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">app_label* <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">model* <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.django_migrations" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.django_migrations</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">app* <FONT COLOR="#666666">CHARACTER VARYING(255)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">name* <FONT COLOR="#666666">CHARACTER VARYING(255)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">applied* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.django_q_ormq" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.django_q_ormq</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">key* <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">payload* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">lock <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.django_q_schedule" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.django_q_schedule</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">func* <FONT COLOR="#666666">CHARACTER VARYING(256)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">hook <FONT COLOR="#666666">CHARACTER VARYING(256)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">args <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">kwargs <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">schedule_type* <FONT COLOR="#666666">CHARACTER VARYING(2)</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">repeats* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">next_run <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">task <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT">name <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT">minutes <FONT COLOR="#666666">SMALLINT</FONT></TD></TR>
+      <TR><TD PORT="c11" ALIGN="LEFT">cron <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c12" ALIGN="LEFT">cluster <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c13" ALIGN="LEFT">intended_date_kwarg <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.django_q_task" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.django_q_task</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT">name* <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">func* <FONT COLOR="#666666">CHARACTER VARYING(256)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">hook <FONT COLOR="#666666">CHARACTER VARYING(256)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">args <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">kwargs <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">result <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">started* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">stopped* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">success* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT">group <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c11" ALIGN="LEFT">attempt_count* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c12" ALIGN="LEFT">cluster <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.django_session" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.django_session</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>session_key</B> <FONT COLOR="#666666">CHARACTER VARYING(40)</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">session_data* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">expire_date* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.django_site" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.django_site</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> domain* <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">name* <FONT COLOR="#666666">CHARACTER VARYING(50)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_chain" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_chain</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">chain_order* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">chain_label* <FONT COLOR="#666666">CHARACTER VARYING(4)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">source* <FONT COLOR="#666666">CHARACTER VARYING(16)</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">first_residue <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">last_residue <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">n_terminal_cap <FONT COLOR="#666666">CHARACTER VARYING(5)</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">c_terminal_cap <FONT COLOR="#666666">CHARACTER VARYING(5)</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">match_method <FONT COLOR="#666666">CHARACTER VARYING(16)</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT">reference_start <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT">reference_end <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c11" ALIGN="LEFT">reference_identity <FONT COLOR="#666666">DOUBLE PRECISION</FONT></TD></TR>
+      <TR><TD PORT="c12" ALIGN="LEFT">reference_coverage <FONT COLOR="#666666">DOUBLE PRECISION</FONT></TD></TR>
+      <TR><TD PORT="c13" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c14" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> polymer_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_collection" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_collection</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">name* <FONT COLOR="#666666">CHARACTER VARYING(255)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">description <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> user_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_creator" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_creator</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">name <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">orcid <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">email <FONT COLOR="#666666">CHARACTER VARYING(254)</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">institution <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_external_link" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_external_link</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">url* <FONT COLOR="#666666">CHARACTER VARYING</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">label <FONT COLOR="#666666">CHARACTER VARYING</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_favorite" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_favorite</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">created_on* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> user_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_feature_switch" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_feature_switch</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">irods_service_available* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_frontend_download_instance" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_frontend_download_instance</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">created_on* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">used* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> user_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_frontend_download_instance_processed_files" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_frontend_download_instance_processed_files</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> frontenddownloadinstance_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulationprocessedfile_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_frontend_download_instance_uploaded_files" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_frontend_download_instance_uploaded_files</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> frontenddownloadinstance_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulationuploadedfile_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_ligand" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_ligand</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">name* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">smiles <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">declared_identity <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">identity_software <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">inchi <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">inchikey <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK,U</FONT> chain_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_pdb" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_pdb</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> pdb_id* <FONT COLOR="#666666">CHARACTER VARYING(20)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">classification <FONT COLOR="#666666">CHARACTER VARYING(255)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">title <FONT COLOR="#666666">CHARACTER VARYING(500)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_polymer" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_polymer</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">polymer_type* <FONT COLOR="#666666">CHARACTER VARYING(8)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">sequence* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">residues* <FONT COLOR="#666666">CHARACTER VARYING(5)[]</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">residues_hash* <FONT COLOR="#666666">CHARACTER VARYING(64)</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">num_residues* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">reference_db <FONT COLOR="#666666">CHARACTER VARYING(16)</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">reference_accession <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_process_job" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_process_job</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">server* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">status* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">log_file <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">exit_code <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">last_error <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">created_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">started_at <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">finished_at <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> ticket_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT">num_attempts* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_processed_file" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_processed_file</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> file_type* <FONT COLOR="#666666">CHARACTER VARYING(40)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">local_file_path* <FONT COLOR="#666666">CHARACTER VARYING</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">filename* <FONT COLOR="#666666">CHARACTER VARYING(1000)</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">file_size_bytes <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">description <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">md5_hash <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_processed_file_type" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_processed_file_type</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>name</B> <FONT COLOR="#666666">CHARACTER VARYING(40)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_pub" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_pub</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">title* <FONT COLOR="#666666">CHARACTER VARYING(400)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">authors* <FONT COLOR="#666666">CHARACTER VARYING(1000)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">journal* <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">volume* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">number <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">year* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">pages <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> doi <FONT COLOR="#666666">CHARACTER VARYING(255)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_replicate" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_replicate</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">trajectory_file_name* <FONT COLOR="#666666">CHARACTER VARYING(255)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_simulation" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_simulation</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">description <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">run_commands <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">water_type <FONT COLOR="#666666">CHARACTER VARYING(10)</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">water_density <FONT COLOR="#666666">DOUBLE PRECISION</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">duration <FONT COLOR="#666666">DOUBLE PRECISION</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">sampling_frequency <FONT COLOR="#666666">DOUBLE PRECISION</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">creation_date* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> software_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> md_repo_ticket_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT">rmsd_values <FONT COLOR="#666666">DOUBLE PRECISION[]</FONT></TD></TR>
+      <TR><TD PORT="c11" ALIGN="LEFT">rmsf_values <FONT COLOR="#666666">DOUBLE PRECISION[]</FONT></TD></TR>
+      <TR><TD PORT="c12" ALIGN="LEFT">is_placeholder* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c13" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> contributor_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c14" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> unique_file_hash_string <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c15" ALIGN="LEFT">forcefield <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c16" ALIGN="LEFT">forcefield_comments <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c17" ALIGN="LEFT">temperature <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c18" ALIGN="LEFT">is_deprecated* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c19" ALIGN="LEFT">protonation_method <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c20" ALIGN="LEFT">integration_timestep_fs <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c21" ALIGN="LEFT">short_description* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c22" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> pdb_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c23" ALIGN="LEFT">is_public* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c24" ALIGN="LEFT">fasta_sequence <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c25" ALIGN="LEFT">alias <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c26" ALIGN="LEFT">num_replicates <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c27" ALIGN="LEFT">is_embargoed* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c28" ALIGN="LEFT">is_coarse_grained* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c29" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> irods_ticket <FONT COLOR="#666666">CHARACTER VARYING(255)</FONT></TD></TR>
+      <TR><TD PORT="c30" ALIGN="LEFT">superseding_simulation_id <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c31" ALIGN="LEFT">sampling_frequency_ps <FONT COLOR="#666666">DOUBLE PRECISION</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_simulation_collection" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_simulation_collection</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> collection_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_simulation_creator" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_simulation_creator</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT">rank* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK,FK</FONT> <B>creator_id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK,FK</FONT> <B>simulation_id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_simulation_pub" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_simulation_pub</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> pub_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_simulation_uniprot" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_simulation_uniprot</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> uniprot_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_software" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_software</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">name* <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">version <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_solute" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_solute</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">name* <FONT COLOR="#666666">CHARACTER VARYING(100)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">concentration* <FONT COLOR="#666666">DOUBLE PRECISION</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_submission_completed_event" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_submission_completed_event</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">created_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> path* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_ticket" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_ticket</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">created_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> token* <FONT COLOR="#666666">CHARACTER VARYING(40)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> full_token* <FONT COLOR="#666666">CHARACTER VARYING(40)</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">irods_tickets <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">guid* <FONT COLOR="#666666">UUID</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">n_submissions* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> created_by_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">used_for_upload* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT">irods_creation_error* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT">ticket_type* <FONT COLOR="#666666">CHARACTER VARYING</FONT></TD></TR>
+      <TR><TD PORT="c11" ALIGN="LEFT">no_files_found* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c12" ALIGN="LEFT">finished_generating* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c13" ALIGN="LEFT">orcid <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+      <TR><TD PORT="c14" ALIGN="LEFT">upload_notification_sent* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c15" ALIGN="LEFT">processing_complete* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c16" ALIGN="LEFT">irods_creation_error_detail <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_triage_delivery" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_triage_delivery</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">server* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">channel* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">role* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> idempotency_key* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">body* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">status* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">slack_ts <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">attempt_count* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT">last_error <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT">posting_started_at <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c11" ALIGN="LEFT">delivered_at <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c12" ALIGN="LEFT">created_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c13" ALIGN="LEFT">updated_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c14" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> parent_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c15" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> ticket_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_triage_delivery_finding" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_triage_delivery_finding</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> delivery_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> finding_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_triage_finding" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_triage_finding</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">server* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">evidence_kind* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">landing_id <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> event_key* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">normalized_signature* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">raw_hash* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">phase* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">failure_class* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT">cause_domain* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT">next_actor* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c11" ALIGN="LEFT">confidence* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c12" ALIGN="LEFT">needs_review* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c13" ALIGN="LEFT">review_reason <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c14" ALIGN="LEFT">rule_ids* <FONT COLOR="#666666">JSONB</FONT></TD></TR>
+      <TR><TD PORT="c15" ALIGN="LEFT">remediation* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c16" ALIGN="LEFT">evidence* <FONT COLOR="#666666">JSONB</FONT></TD></TR>
+      <TR><TD PORT="c17" ALIGN="LEFT">state* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c18" ALIGN="LEFT">first_seen_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c19" ALIGN="LEFT">last_seen_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c20" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> process_job_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c21" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> ticket_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c22" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> upload_instance_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_triage_model_review" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_triage_model_review</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>review_key</B> <FONT COLOR="#666666">CHARACTER VARYING(64)</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">failure_class* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">cause_domain* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">next_actor* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">confidence* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">needs_review* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">review_reason <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">remediation* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">explanation <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT">model_name <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT">input_tokens <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c11" ALIGN="LEFT">output_tokens <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c12" ALIGN="LEFT">created_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_triage_occurrence" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_triage_occurrence</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">observed_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">raw_hash* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">source_generation* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">evidence* <FONT COLOR="#666666">JSONB</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> finding_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_triage_reaction" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_triage_reaction</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">reaction* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">slack_user_id* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">active* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">first_seen_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">last_seen_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> delivery_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_uniprot" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_uniprot</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> uniprot_id* <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">name* <FONT COLOR="#666666">CHARACTER VARYING(500)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">amino_length* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">sequence* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_upload_instance" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_upload_instance</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">created_on* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> user_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">successful <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">lead_contributor_orcid* <FONT COLOR="#666666">CHARACTER VARYING(20)</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">filenames <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> ticket_id <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">landing_id <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT">is_abandoned* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_upload_instance_message" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_upload_instance_message</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">timestamp* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">message* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_upload_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">is_error* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">is_warning* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_uploaded_file" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_uploaded_file</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">filename* <FONT COLOR="#666666">CHARACTER VARYING(1000)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> file_type* <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> simulation_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">description <FONT COLOR="#666666">CHARACTER VARYING(1000)</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">local_file_path* <FONT COLOR="#666666">CHARACTER VARYING</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">file_size_bytes <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">md5_hash <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">is_primary* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_uploaded_file_type" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_uploaded_file_type</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>name</B> <FONT COLOR="#666666">CHARACTER VARYING(32)</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_user" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_user</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">password* <FONT COLOR="#666666">CHARACTER VARYING(128)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">last_login <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">is_superuser* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> username* <FONT COLOR="#666666">CHARACTER VARYING(150)</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">is_staff* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">date_joined* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">first_name* <FONT COLOR="#666666">CHARACTER VARYING(50)</FONT></TD></TR>
+      <TR><TD PORT="c8" ALIGN="LEFT">last_name* <FONT COLOR="#666666">CHARACTER VARYING(50)</FONT></TD></TR>
+      <TR><TD PORT="c9" ALIGN="LEFT">registered* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c10" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">U</FONT> email* <FONT COLOR="#666666">CHARACTER VARYING(254)</FONT></TD></TR>
+      <TR><TD PORT="c11" ALIGN="LEFT">institution <FONT COLOR="#666666">CHARACTER VARYING(255)</FONT></TD></TR>
+      <TR><TD PORT="c12" ALIGN="LEFT">is_active* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+      <TR><TD PORT="c13" ALIGN="LEFT">can_contribute* <FONT COLOR="#666666">BOOLEAN</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_user_groups" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_user_groups</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> user_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> group_id* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.md_user_user_permissions" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.md_user_user_permissions</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> user_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> permission_id* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.pghistory_context" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.pghistory_context</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">UUID</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">created_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">updated_at* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">metadata* <FONT COLOR="#666666">JSONB</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.socialaccount_socialaccount" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.socialaccount_socialaccount</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">provider* <FONT COLOR="#666666">CHARACTER VARYING(200)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">uid* <FONT COLOR="#666666">CHARACTER VARYING(191)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">last_login* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">date_joined* <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">extra_data* <FONT COLOR="#666666">JSONB</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> user_id* <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.socialaccount_socialapp" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.socialaccount_socialapp</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">provider* <FONT COLOR="#666666">CHARACTER VARYING(30)</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">name* <FONT COLOR="#666666">CHARACTER VARYING(40)</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">client_id* <FONT COLOR="#666666">CHARACTER VARYING(191)</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT">secret* <FONT COLOR="#666666">CHARACTER VARYING(191)</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT">key* <FONT COLOR="#666666">CHARACTER VARYING(191)</FONT></TD></TR>
+      <TR><TD PORT="c6" ALIGN="LEFT">provider_id* <FONT COLOR="#666666">CHARACTER VARYING(200)</FONT></TD></TR>
+      <TR><TD PORT="c7" ALIGN="LEFT">settings* <FONT COLOR="#666666">JSONB</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.socialaccount_socialapp_sites" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.socialaccount_socialapp_sites</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">BIGINT</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> socialapp_id* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> site_id* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.socialaccount_socialtoken" [label=<
+    <TABLE BORDER="1" CELLBORDER="0" CELLSPACING="0" CELLPADDING="4">
+      <TR><TD BGCOLOR="#dbe7f3"><B>public.socialaccount_socialtoken</B></TD></TR>
+      <TR><TD PORT="c0" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">PK</FONT> <B>id</B> <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c1" ALIGN="LEFT">token* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c2" ALIGN="LEFT">token_secret* <FONT COLOR="#666666">TEXT</FONT></TD></TR>
+      <TR><TD PORT="c3" ALIGN="LEFT">expires_at <FONT COLOR="#666666">TIMESTAMP WITH TIME ZONE</FONT></TD></TR>
+      <TR><TD PORT="c4" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> account_id* <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+      <TR><TD PORT="c5" ALIGN="LEFT"><FONT POINT-SIZE="8" COLOR="#666666">FK</FONT> app_id <FONT COLOR="#666666">INTEGER</FONT></TD></TR>
+    </TABLE>
+  >];
+
+  "public.account_emailaddress":"c4" -> "public.md_user":"c0" [arrowhead=teetee, tooltip="public.account_emailaddress(user_id) -> public.md_user(id)"];
+  "public.account_emailconfirmation":"c4" -> "public.account_emailaddress":"c0" [arrowhead=teetee, tooltip="public.account_emailconfirmation(email_address_id) -> public.account_emailaddress(id)"];
+  "public.auth_group_permissions":"c2" -> "public.auth_permission":"c0" [arrowhead=teetee, tooltip="public.auth_group_permissions(permission_id) -> public.auth_permission(id)"];
+  "public.auth_group_permissions":"c1" -> "public.auth_group":"c0" [arrowhead=teetee, tooltip="public.auth_group_permissions(group_id) -> public.auth_group(id)"];
+  "public.auth_permission":"c2" -> "public.django_content_type":"c0" [arrowhead=teetee, tooltip="public.auth_permission(content_type_id) -> public.django_content_type(id)"];
+  "public.django_admin_log":"c6" -> "public.django_content_type":"c0" [arrowhead=teeodot, tooltip="public.django_admin_log(content_type_id) -> public.django_content_type(id)"];
+  "public.django_admin_log":"c7" -> "public.md_user":"c0" [arrowhead=teetee, tooltip="public.django_admin_log(user_id) -> public.md_user(id)"];
+  "public.md_chain":"c14" -> "public.md_polymer":"c0" [arrowhead=teetee, tooltip="public.md_chain(polymer_id) -> public.md_polymer(id)"];
+  "public.md_chain":"c13" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_chain(simulation_id) -> public.md_simulation(id)"];
+  "public.md_collection":"c3" -> "public.md_user":"c0" [arrowhead=teetee, tooltip="public.md_collection(user_id) -> public.md_user(id)"];
+  "public.md_external_link":"c3" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_external_link(simulation_id) -> public.md_simulation(id)"];
+  "public.md_favorite":"c2" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_favorite(simulation_id) -> public.md_simulation(id)"];
+  "public.md_favorite":"c3" -> "public.md_user":"c0" [arrowhead=teetee, tooltip="public.md_favorite(user_id) -> public.md_user(id)"];
+  "public.md_ligand":"c8" -> "public.md_chain":"c0" [arrowhead=teeodot, tooltip="public.md_ligand(chain_id) -> public.md_chain(id)"];
+  "public.md_process_job":"c9" -> "public.md_ticket":"c0" [arrowhead=teetee, tooltip="public.md_process_job(ticket_id) -> public.md_ticket(id)"];
+  "public.md_processed_file":"c1" -> "public.md_processed_file_type":"c0" [arrowhead=teetee, tooltip="public.md_processed_file(file_type) -> public.md_processed_file_type(name)"];
+  "public.md_replicate":"c2" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_replicate(simulation_id) -> public.md_simulation(id)"];
+  "public.md_frontend_download_instance_processed_files":"c1" -> "public.md_frontend_download_instance":"c0" [arrowhead=teetee, tooltip="public.md_frontend_download_instance_processed_files(frontenddownloadinstance_id) -> public.md_frontend_download_instance(id)"];
+  "public.md_frontend_download_instance_uploaded_files":"c1" -> "public.md_frontend_download_instance":"c0" [arrowhead=teetee, tooltip="public.md_frontend_download_instance_uploaded_files(frontenddownloadinstance_id) -> public.md_frontend_download_instance(id)"];
+  "public.md_frontend_download_instance":"c3" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_frontend_download_instance(simulation_id) -> public.md_simulation(id)"];
+  "public.md_frontend_download_instance_processed_files":"c2" -> "public.md_processed_file":"c0" [arrowhead=teetee, tooltip="public.md_frontend_download_instance_processed_files(simulationprocessedfile_id) -> public.md_processed_file(id)"];
+  "public.md_frontend_download_instance_uploaded_files":"c2" -> "public.md_uploaded_file":"c0" [arrowhead=teetee, tooltip="public.md_frontend_download_instance_uploaded_files(simulationuploadedfile_id) -> public.md_uploaded_file(id)"];
+  "public.md_frontend_download_instance":"c4" -> "public.md_user":"c0" [arrowhead=teeodot, tooltip="public.md_frontend_download_instance(user_id) -> public.md_user(id)"];
+  "public.md_ligand":"c3" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_ligand(simulation_id) -> public.md_simulation(id)"];
+  "public.md_ticket":"c7" -> "public.md_user":"c0" [arrowhead=teetee, tooltip="public.md_ticket(created_by_id) -> public.md_user(id)"];
+  "public.md_simulation":"c9" -> "public.md_ticket":"c0" [arrowhead=teeodot, tooltip="public.md_simulation(md_repo_ticket_id) -> public.md_ticket(id)"];
+  "public.md_simulation_pub":"c2" -> "public.md_pub":"c0" [arrowhead=teetee, tooltip="public.md_simulation_pub(pub_id) -> public.md_pub(id)"];
+  "public.md_upload_instance":"c2" -> "public.md_simulation":"c0" [arrowhead=teeodot, tooltip="public.md_upload_instance(simulation_id) -> public.md_simulation(id)"];
+  "public.md_processed_file":"c4" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_processed_file(simulation_id) -> public.md_simulation(id)"];
+  "public.md_simulation_uniprot":"c1" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_simulation_uniprot(simulation_id) -> public.md_simulation(id)"];
+  "public.md_uploaded_file":"c3" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_uploaded_file(simulation_id) -> public.md_simulation(id)"];
+  "public.md_simulation_pub":"c1" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_simulation_pub(simulation_id) -> public.md_simulation(id)"];
+  "public.md_upload_instance_message":"c3" -> "public.md_upload_instance":"c0" [arrowhead=teetee, tooltip="public.md_upload_instance_message(simulation_upload_id) -> public.md_upload_instance(id)"];
+  "public.md_simulation":"c8" -> "public.md_software":"c0" [arrowhead=teeodot, tooltip="public.md_simulation(software_id) -> public.md_software(id)"];
+  "public.md_upload_instance":"c7" -> "public.md_ticket":"c0" [arrowhead=teeodot, tooltip="public.md_upload_instance(ticket_id) -> public.md_ticket(id)"];
+  "public.md_simulation_uniprot":"c2" -> "public.md_uniprot":"c0" [arrowhead=teetee, tooltip="public.md_simulation_uniprot(uniprot_id) -> public.md_uniprot(id)"];
+  "public.md_upload_instance":"c3" -> "public.md_user":"c0" [arrowhead=teeodot, tooltip="public.md_upload_instance(user_id) -> public.md_user(id)"];
+  "public.md_simulation":"c22" -> "public.md_pdb":"c0" [arrowhead=teeodot, tooltip="public.md_simulation(pdb_id) -> public.md_pdb(id)"];
+  "public.md_simulation_collection":"c2" -> "public.md_collection":"c0" [arrowhead=teetee, tooltip="public.md_simulation_collection(collection_id) -> public.md_collection(id)"];
+  "public.md_simulation_collection":"c1" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_simulation_collection(simulation_id) -> public.md_simulation(id)"];
+  "public.md_simulation":"c13" -> "public.md_user":"c0" [arrowhead=teeodot, tooltip="public.md_simulation(contributor_id) -> public.md_user(id)"];
+  "public.md_simulation_creator":"c2" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_simulation_creator(simulation_id) -> public.md_simulation(id)"];
+  "public.md_simulation_creator":"c1" -> "public.md_creator":"c0" [arrowhead=teetee, tooltip="public.md_simulation_creator(creator_id) -> public.md_creator(id)"];
+  "public.md_solute":"c3" -> "public.md_simulation":"c0" [arrowhead=teetee, tooltip="public.md_solute(simulation_id) -> public.md_simulation(id)"];
+  "public.md_triage_delivery_finding":"c1" -> "public.md_triage_delivery":"c0" [arrowhead=teetee, tooltip="public.md_triage_delivery_finding(delivery_id) -> public.md_triage_delivery(id)"];
+  "public.md_triage_delivery_finding":"c2" -> "public.md_triage_finding":"c0" [arrowhead=teetee, tooltip="public.md_triage_delivery_finding(finding_id) -> public.md_triage_finding(id)"];
+  "public.md_triage_delivery":"c14" -> "public.md_triage_delivery":"c0" [arrowhead=teeodot, tooltip="public.md_triage_delivery(parent_id) -> public.md_triage_delivery(id)"];
+  "public.md_triage_delivery":"c15" -> "public.md_ticket":"c0" [arrowhead=teeodot, tooltip="public.md_triage_delivery(ticket_id) -> public.md_ticket(id)"];
+  "public.md_triage_finding":"c20" -> "public.md_process_job":"c0" [arrowhead=teeodot, tooltip="public.md_triage_finding(process_job_id) -> public.md_process_job(id)"];
+  "public.md_triage_finding":"c21" -> "public.md_ticket":"c0" [arrowhead=teeodot, tooltip="public.md_triage_finding(ticket_id) -> public.md_ticket(id)"];
+  "public.md_triage_finding":"c22" -> "public.md_upload_instance":"c0" [arrowhead=teeodot, tooltip="public.md_triage_finding(upload_instance_id) -> public.md_upload_instance(id)"];
+  "public.md_triage_occurrence":"c5" -> "public.md_triage_finding":"c0" [arrowhead=teetee, tooltip="public.md_triage_occurrence(finding_id) -> public.md_triage_finding(id)"];
+  "public.md_triage_reaction":"c6" -> "public.md_triage_delivery":"c0" [arrowhead=teetee, tooltip="public.md_triage_reaction(delivery_id) -> public.md_triage_delivery(id)"];
+  "public.md_uploaded_file":"c2" -> "public.md_uploaded_file_type":"c0" [arrowhead=teetee, tooltip="public.md_uploaded_file(file_type) -> public.md_uploaded_file_type(name)"];
+  "public.md_user_groups":"c2" -> "public.auth_group":"c0" [arrowhead=teetee, tooltip="public.md_user_groups(group_id) -> public.auth_group(id)"];
+  "public.md_user_groups":"c1" -> "public.md_user":"c0" [arrowhead=teetee, tooltip="public.md_user_groups(user_id) -> public.md_user(id)"];
+  "public.md_user_user_permissions":"c2" -> "public.auth_permission":"c0" [arrowhead=teetee, tooltip="public.md_user_user_permissions(permission_id) -> public.auth_permission(id)"];
+  "public.md_user_user_permissions":"c1" -> "public.md_user":"c0" [arrowhead=teetee, tooltip="public.md_user_user_permissions(user_id) -> public.md_user(id)"];
+  "public.socialaccount_socialtoken":"c4" -> "public.socialaccount_socialaccount":"c0" [arrowhead=teetee, tooltip="public.socialaccount_socialtoken(account_id) -> public.socialaccount_socialaccount(id)"];
+  "public.socialaccount_socialtoken":"c5" -> "public.socialaccount_socialapp":"c0" [arrowhead=teeodot, tooltip="public.socialaccount_socialtoken(app_id) -> public.socialaccount_socialapp(id)"];
+  "public.socialaccount_socialapp_sites":"c2" -> "public.django_site":"c0" [arrowhead=teetee, tooltip="public.socialaccount_socialapp_sites(site_id) -> public.django_site(id)"];
+  "public.socialaccount_socialapp_sites":"c1" -> "public.socialaccount_socialapp":"c0" [arrowhead=teetee, tooltip="public.socialaccount_socialapp_sites(socialapp_id) -> public.socialaccount_socialapp(id)"];
+  "public.socialaccount_socialaccount":"c6" -> "public.md_user":"c0" [arrowhead=teetee, tooltip="public.socialaccount_socialaccount(user_id) -> public.md_user(id)"];
+}
