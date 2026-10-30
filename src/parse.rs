@@ -1,14 +1,30 @@
 //! Turn DDL text into a [`Schema`], skipping statements that don't parse.
 
-use crate::model::{Column, ForeignKey, Schema, Table};
+use crate::model::{Column, ForeignKey, NamedConstraint, Schema, Table};
+use regex::Regex;
 use sqlparser::ast::{
-    AlterTableOperation, ColumnDef, ColumnOption, CreateTable, Expr,
-    ForeignKeyConstraint, IndexColumn, ObjectName, ObjectNamePart, Statement,
-    TableConstraint,
+    AlterColumnOperation, AlterTable, AlterTableOperation, ColumnDef, ColumnOption,
+    CreateTable, DataType, Expr, ForeignKeyConstraint, IndexColumn, ObjectName,
+    ObjectNamePart, ObjectType, RenameTableNameKind, Statement, TableConstraint,
 };
 use sqlparser::dialect::{Dialect, SQLiteDialect};
 use sqlparser::parser::Parser;
 use sqlparser::tokenizer::{Token, TokenWithSpan, Tokenizer, Whitespace};
+use std::sync::LazyLock;
+
+/// Statements sqlparser can't parse that add nothing to a diagram, so they
+/// are skipped without a warning: pg_dump's `ALTER TABLE ... ALTER COLUMN
+/// ... ADD GENERATED ... AS IDENTITY (SEQUENCE NAME ...)` (sqlparser stops
+/// at `SEQUENCE NAME`; the column's `NOT NULL` is already in its `CREATE
+/// TABLE`). Matched against the statement's tokens joined by spaces.
+static HARMLESS: LazyLock<Vec<Regex>> = LazyLock::new(|| {
+    vec![
+        Regex::new(
+            r"(?is)^ALTER TABLE (?:ONLY )?.+? ALTER (?:COLUMN )?.+? ADD GENERATED\b",
+        )
+        .expect("valid regex"),
+    ]
+});
 
 /// A statement that was skipped, with the parser's explanation.
 #[derive(Debug, Clone)]
@@ -19,7 +35,8 @@ pub struct Warning {
 /// Rewrite client-side batch syntax that sqlparser doesn't understand into
 /// plain `;` terminators, keeping line numbers intact:
 /// `GO` (SQL Server/Sybase), a lone `/` (Oracle SQL*Plus), and MySQL's
-/// `DELIMITER` command.
+/// `DELIMITER` command. psql meta-commands (a line starting with `\`, such
+/// as the `\restrict` pair pg_dump writes since 17.6) are dropped.
 pub fn preprocess(sql: &str) -> String {
     let mut delimiter = String::from(";");
     let mut out = String::with_capacity(sql.len());
@@ -28,7 +45,9 @@ pub fn preprocess(sql: &str) -> String {
         let eol = &line[body.len()..];
         let trimmed = body.trim();
         let mut words = trimmed.split_whitespace();
-        if words
+        if trimmed.starts_with('\\') {
+            out.push_str(eol);
+        } else if words
             .next()
             .is_some_and(|w| w.eq_ignore_ascii_case("delimiter"))
         {
@@ -103,9 +122,6 @@ pub fn parse_statements(
                 }
             }
             Err(e) => {
-                warnings.push(Warning {
-                    message: e.to_string(),
-                });
                 // The parser may have stopped anywhere, even past a `;`, so
                 // rewind to where the statement began and skip just that one.
                 // (Rebuilding the parser instead would copy the remaining
@@ -113,7 +129,12 @@ pub fn parse_statements(
                 while parser.index() > stmt_start {
                     parser.prev_token();
                 }
-                skip_past_semicolon(&mut parser);
+                let skipped = skip_past_semicolon(&mut parser);
+                if !HARMLESS.iter().any(|r| r.is_match(&skipped)) {
+                    warnings.push(Warning {
+                        message: e.to_string(),
+                    });
+                }
             }
         }
     }
@@ -166,55 +187,191 @@ fn normalize_tokens(
     tokens
 }
 
-fn skip_past_semicolon(parser: &mut Parser) {
+/// Skip to just past the next `;`, returning the skipped tokens joined by
+/// spaces.
+fn skip_past_semicolon(parser: &mut Parser) -> String {
+    let mut skipped = vec![];
     loop {
         match parser.next_token().token {
-            Token::SemiColon | Token::EOF => return,
+            Token::SemiColon | Token::EOF => return skipped.join(" "),
+            t => skipped.push(t.to_string()),
+        }
+    }
+}
+
+/// Add the tables and foreign keys described by `statements` to `schema`,
+/// in input order, so that a sequence of migrations ends with what it built:
+/// `DROP TABLE`, `RENAME TABLE` and `ALTER TABLE` (adding, dropping and
+/// renaming columns and constraints, `NOT NULL`, types) are applied as they
+/// come. An `ALTER TABLE` on a table not yet defined is applied after the
+/// rest, so a dump that adds its constraints before the tables still works.
+/// Call [`Schema::resolve_foreign_keys`] once all input has been added.
+pub fn add_statements(schema: &mut Schema, statements: &[Statement]) -> Vec<Warning> {
+    let mut deferred = vec![];
+    for stmt in statements {
+        match stmt {
+            Statement::CreateTable(ct) => add_create_table(schema, ct),
+            Statement::AlterTable(at) => {
+                if schema.find_table(&object_name(&at.name)).is_some() {
+                    alter_table(schema, at);
+                } else {
+                    deferred.push(at);
+                }
+            }
+            // Never deferred: a dump's `DROP TABLE IF EXISTS t` comes before
+            // its `CREATE TABLE t`.
+            Statement::Drop {
+                object_type: ObjectType::Table,
+                names,
+                ..
+            } => {
+                for name in names {
+                    if let Some(ti) = schema.find_table(&object_name(name)) {
+                        schema.drop_table(ti);
+                    }
+                }
+            }
+            Statement::RenameTable(renames) => {
+                for r in renames {
+                    if let Some(ti) = schema.find_table(&object_name(&r.old_name)) {
+                        schema.rename_table(ti, &object_name(&r.new_name));
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
+    let mut warnings = vec![];
+    for at in deferred {
+        let name = object_name(&at.name);
+        if schema.find_table(&name).is_some() {
+            alter_table(schema, at);
+        } else {
+            warnings.push(Warning {
+                message: format!("ALTER TABLE on undefined table {name}"),
+            });
+        }
+    }
+    warnings
+}
+
+/// Apply one `ALTER TABLE` to a table that exists.
+fn alter_table(schema: &mut Schema, at: &AlterTable) {
+    let Some(ti) = schema.find_table(&object_name(&at.name)) else {
+        return;
+    };
+    for op in &at.operations {
+        match op {
+            AlterTableOperation::AddConstraint { constraint, .. } => {
+                let mut fks = vec![];
+                apply_constraint(&mut schema.tables[ti], &mut fks, constraint);
+                schema.foreign_keys.extend(fks);
+            }
+            AlterTableOperation::AddColumn { column_def, .. } => {
+                let (col, fks) = column(&schema.tables[ti].name, column_def);
+                schema.tables[ti].columns.push(col);
+                schema.foreign_keys.extend(fks);
+            }
+            AlterTableOperation::DropColumn { column_names, .. } => {
+                for name in column_names {
+                    schema.drop_column(ti, &name.value);
+                }
+            }
+            AlterTableOperation::DropConstraint { name, .. }
+            | AlterTableOperation::DropForeignKey { name, .. } => {
+                schema.drop_constraint(ti, &name.value);
+            }
+            AlterTableOperation::DropPrimaryKey { .. } => {
+                let table = &mut schema.tables[ti];
+                for c in &mut table.columns {
+                    c.primary_key = false;
+                }
+                table.constraints.retain(|c| !c.primary_key);
+            }
+            AlterTableOperation::RenameColumn {
+                old_column_name,
+                new_column_name,
+            } => {
+                schema.rename_column(
+                    ti,
+                    &old_column_name.value,
+                    &new_column_name.value,
+                );
+            }
+            AlterTableOperation::RenameTable { table_name } => {
+                let (RenameTableNameKind::To(name) | RenameTableNameKind::As(name)) =
+                    table_name;
+                schema.rename_table(ti, &object_name(name));
+            }
+            AlterTableOperation::AlterColumn { column_name, op } => {
+                let Some(c) = schema.tables[ti].column_mut(&column_name.value) else {
+                    continue;
+                };
+                match op {
+                    AlterColumnOperation::SetNotNull => c.nullable = false,
+                    AlterColumnOperation::DropNotNull => c.nullable = c.primary_key,
+                    AlterColumnOperation::SetDataType { data_type, .. } => {
+                        c.data_type = data_type.to_string();
+                    }
+                    _ => {}
+                }
+            }
+            // MySQL's CHANGE (rename and redefine) and MODIFY (redefine).
+            AlterTableOperation::ChangeColumn {
+                old_name,
+                new_name,
+                data_type,
+                options,
+                ..
+            } => {
+                schema.rename_column(ti, &old_name.value, &new_name.value);
+                redefine_column(
+                    &mut schema.tables[ti],
+                    &new_name.value,
+                    data_type,
+                    options,
+                );
+            }
+            AlterTableOperation::ModifyColumn {
+                col_name,
+                data_type,
+                options,
+                ..
+            } => {
+                redefine_column(
+                    &mut schema.tables[ti],
+                    &col_name.value,
+                    data_type,
+                    options,
+                );
+            }
             _ => {}
         }
     }
 }
 
-/// Add the tables and foreign keys described by `statements` to `schema`.
-/// `ALTER TABLE` statements are applied after all `CREATE TABLE`s so that
-/// their order in the input doesn't matter. Call
-/// [`Schema::resolve_foreign_keys`] once all input has been added.
-pub fn add_statements(schema: &mut Schema, statements: &[Statement]) -> Vec<Warning> {
-    let mut warnings = vec![];
-    for stmt in statements {
-        if let Statement::CreateTable(ct) = stmt {
-            add_create_table(schema, ct);
+/// Give a column a new type and options, as MySQL's `MODIFY` does: `NOT NULL`
+/// must be repeated or it is lost.
+fn redefine_column(
+    table: &mut Table,
+    name: &str,
+    data_type: &DataType,
+    options: &[ColumnOption],
+) {
+    let Some(c) = table.column_mut(name) else {
+        return;
+    };
+    c.data_type = data_type.to_string();
+    for opt in options {
+        match opt {
+            ColumnOption::PrimaryKey(_) => c.primary_key = true,
+            ColumnOption::Unique(_) => c.unique = true,
+            _ => {}
         }
     }
-    for stmt in statements {
-        let Statement::AlterTable(at) = stmt else {
-            continue;
-        };
-        let name = object_name(&at.name);
-        let Some(ti) = schema.find_table(&name) else {
-            warnings.push(Warning {
-                message: format!("ALTER TABLE on undefined table {name}"),
-            });
-            continue;
-        };
-        let table_name = schema.tables[ti].name.clone();
-        for op in &at.operations {
-            match op {
-                AlterTableOperation::AddConstraint { constraint, .. } => {
-                    let mut fks = vec![];
-                    apply_constraint(&mut schema.tables[ti], &mut fks, constraint);
-                    schema.foreign_keys.extend(fks);
-                }
-                AlterTableOperation::AddColumn { column_def, .. } => {
-                    let (col, fks) = column(&table_name, column_def);
-                    schema.tables[ti].columns.push(col);
-                    schema.foreign_keys.extend(fks);
-                }
-                _ => {}
-            }
-        }
-    }
-    warnings
+    c.nullable =
+        !c.primary_key && !options.iter().any(|o| matches!(o, ColumnOption::NotNull));
 }
 
 fn add_create_table(schema: &mut Schema, ct: &CreateTable) {
@@ -279,13 +436,28 @@ fn apply_constraint(
 ) {
     match constraint {
         TableConstraint::PrimaryKey(pk) => {
-            set_primary_key(table, &index_columns(&pk.columns));
+            let columns = index_columns(&pk.columns);
+            set_primary_key(table, &columns);
+            if let Some(name) = &pk.name {
+                table.constraints.push(NamedConstraint {
+                    name: name.value.clone(),
+                    primary_key: true,
+                    columns,
+                });
+            }
         }
         TableConstraint::Unique(u) => {
             if let [only] = index_columns(&u.columns).as_slice()
                 && let Some(c) = table.column_mut(only)
             {
                 c.unique = true;
+                if let Some(name) = &u.name {
+                    table.constraints.push(NamedConstraint {
+                        name: name.value.clone(),
+                        primary_key: false,
+                        columns: vec![only.clone()],
+                    });
+                }
             }
         }
         TableConstraint::ForeignKey(fk) => fks.push(foreign_key(&table.name, fk)),
@@ -455,5 +627,116 @@ mod tests {
         assert!(w.is_empty(), "{w:?}");
         assert!(s.table("parent").unwrap().stub);
         assert!(s.foreign_keys[0].is_optional(&s));
+    }
+
+    #[test]
+    fn pg_dump_noise_is_silent() {
+        let sql = "\\restrict abc123\n\
+                   CREATE TABLE public.a (id bigint NOT NULL);\n\
+                   ALTER TABLE public.a ALTER COLUMN id ADD GENERATED BY DEFAULT AS IDENTITY (\n\
+                   \x20   SEQUENCE NAME public.a_id_seq\n\
+                   \x20   START WITH 1\n\
+                   \x20   CACHE 1\n\
+                   );\n\
+                   ALTER TABLE ONLY public.a ADD CONSTRAINT a_pkey PRIMARY KEY (id);\n\
+                   \\unrestrict abc123\n";
+        let (s, w) = schema(&PostgreSqlDialect {}, sql);
+        assert!(w.is_empty(), "{w:?}");
+        assert_eq!(s.table("a").unwrap().primary_key(), vec!["id"]);
+
+        // Anything else that fails still warns.
+        let (_, w) = schema(&PostgreSqlDialect {}, "ALTER TABLE a FROBNICATE;");
+        assert_eq!(w.len(), 1);
+    }
+
+    #[test]
+    fn migrations_in_order() {
+        let sql = "
+            CREATE TABLE parent (id int, code int);
+            ALTER TABLE parent ADD CONSTRAINT parent_pkey PRIMARY KEY (id);
+            ALTER TABLE parent ADD CONSTRAINT parent_code_key UNIQUE (code);
+            CREATE TABLE child (id int PRIMARY KEY, parent_id int, old_col int, note text);
+            ALTER TABLE child ADD CONSTRAINT child_parent_fk FOREIGN KEY (parent_id) REFERENCES parent (id);
+            CREATE TABLE scratch (id int, parent_id int REFERENCES parent);
+            ALTER TABLE child RENAME COLUMN parent_id TO owner_id;
+            ALTER TABLE parent RENAME TO owner;
+            ALTER TABLE child DROP COLUMN old_col;
+            ALTER TABLE child ALTER COLUMN note SET NOT NULL;
+            ALTER TABLE child ALTER COLUMN note TYPE varchar(10);
+            ALTER TABLE owner DROP CONSTRAINT parent_code_key;
+            DROP TABLE scratch;
+        ";
+        let (s, w) = schema(&PostgreSqlDialect {}, sql);
+        assert!(w.is_empty(), "{w:?}");
+        let names: Vec<_> = s.tables.iter().map(|t| t.name.as_str()).collect();
+        assert_eq!(names, ["owner", "child"]);
+
+        let child = s.table("child").unwrap();
+        assert!(child.column("old_col").is_none());
+        let note = child.column("note").unwrap();
+        assert!(!note.nullable);
+        assert_eq!(note.data_type, "VARCHAR(10)");
+        assert!(!s.table("owner").unwrap().column("code").unwrap().unique);
+
+        assert_eq!(s.foreign_keys.len(), 1, "scratch's key went with it");
+        let fk = &s.foreign_keys[0];
+        assert_eq!(fk.from_columns, vec!["owner_id"]);
+        assert_eq!(fk.to_table, "owner");
+        assert!(child.column("owner_id").unwrap().foreign_key);
+
+        let (s, _) = schema(
+            &PostgreSqlDialect {},
+            &format!("{sql} ALTER TABLE child DROP CONSTRAINT child_parent_fk;"),
+        );
+        assert!(s.foreign_keys.is_empty());
+        let (s, _) = schema(
+            &PostgreSqlDialect {},
+            &format!("{sql} ALTER TABLE owner DROP CONSTRAINT parent_pkey;"),
+        );
+        assert!(s.table("owner").unwrap().primary_key().is_empty());
+    }
+
+    #[test]
+    fn rename_keeps_schema_and_drop_comes_first() {
+        let sql = "CREATE TABLE public.a (id int PRIMARY KEY);
+                   ALTER TABLE public.a RENAME TO b;
+                   DROP TABLE IF EXISTS c;
+                   CREATE TABLE c (id int, b_id int REFERENCES public.b);";
+        let (s, w) = schema(&PostgreSqlDialect {}, sql);
+        assert!(w.is_empty(), "{w:?}");
+        assert!(s.tables.iter().any(|t| t.name == "public.b"));
+        assert!(
+            s.table("c").is_some(),
+            "a DROP before the CREATE drops nothing"
+        );
+        assert_eq!(s.foreign_keys[0].to_table, "public.b");
+    }
+
+    #[test]
+    fn alter_before_create_is_applied_last() {
+        let sql =
+            "ALTER TABLE b ADD CONSTRAINT fk FOREIGN KEY (a_id) REFERENCES a (id);
+                   CREATE TABLE a (id int PRIMARY KEY);
+                   CREATE TABLE b (a_id int);
+                   ALTER TABLE nowhere ADD COLUMN x int;";
+        let (s, w) = schema(&PostgreSqlDialect {}, sql);
+        assert_eq!(s.foreign_keys.len(), 1);
+        assert_eq!(w.len(), 1);
+        assert!(w[0].message.contains("undefined table nowhere"));
+    }
+
+    #[test]
+    fn mysql_change_and_modify() {
+        let sql = "CREATE TABLE t (id int NOT NULL, a int NOT NULL, b int);
+                   ALTER TABLE t CHANGE a c bigint;
+                   ALTER TABLE t MODIFY b varchar(5) NOT NULL;
+                   RENAME TABLE t TO u;";
+        let (s, w) = schema(&MySqlDialect {}, sql);
+        assert!(w.is_empty(), "{w:?}");
+        let u = s.table("u").unwrap();
+        let c = u.column("c").unwrap();
+        assert_eq!(c.data_type, "BIGINT");
+        assert!(c.nullable, "MODIFY/CHANGE without NOT NULL drops it");
+        assert!(!u.column("b").unwrap().nullable);
     }
 }

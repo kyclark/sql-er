@@ -79,8 +79,19 @@ misses some vendor syntax, such as SQL Server `[bracketed]` names.
   `REFERENCES t [(col)]`. When the referenced column is omitted, the target's
   primary key is used.
 - Table-level `PRIMARY KEY (...)`, `UNIQUE (...)` and `FOREIGN KEY ... REFERENCES`.
-- `ALTER TABLE ... ADD CONSTRAINT` and `ADD COLUMN`, applied after all
-  `CREATE TABLE`s, so the input order doesn't matter (as in `pg_dump` output).
+- Statements are applied in input order, so a sequence of migrations ends
+  with the schema it built: `DROP TABLE`, MySQL `RENAME TABLE`, and
+  `ALTER TABLE` with `ADD`/`DROP COLUMN`, `ADD`/`DROP CONSTRAINT` (and MySQL
+  `DROP PRIMARY KEY`/`DROP FOREIGN KEY`), `RENAME TO`, `RENAME COLUMN`,
+  `ALTER COLUMN ... SET`/`DROP NOT NULL` and `TYPE`, and MySQL
+  `CHANGE`/`MODIFY`. An `ALTER TABLE` on a table that isn't defined yet is
+  applied after everything else, so a dump that adds its constraints first
+  still works. Dropping a primary-key or unique constraint by name works only
+  for table-level constraints that were given that name.
+- `pg_dump` output without noise: psql meta-commands (`\restrict`) are dropped,
+  and its identity statements (`ADD GENERATED ... AS IDENTITY (SEQUENCE NAME
+  ...)`), which the parser can't read but which add nothing to the diagram,
+  are skipped without a warning.
 - Schema-qualified names. `public.users` and `users` match when that's
   unambiguous. Name matching ignores case.
 - Batch separators: `GO` (SQL Server/Sybase), `/` (Oracle SQL*Plus), and

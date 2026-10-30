@@ -168,7 +168,7 @@ mod tests {
                 Table {
                     name: "a<b>".into(),
                     columns: vec![col("id", true, false)],
-                    stub: false,
+                    ..Default::default()
                 },
                 Table {
                     name: "child".into(),
@@ -177,7 +177,7 @@ mod tests {
                         col("note", false, false),
                         col("a_id", false, true),
                     ],
-                    stub: false,
+                    ..Default::default()
                 },
             ],
             foreign_keys: vec![ForeignKey {
