@@ -2,7 +2,7 @@ use anyhow::{Context, Result, bail};
 use clap::{Parser, ValueEnum};
 use regex::Regex;
 use sql_er::emit::{self, EmitOptions};
-use sql_er::{Schema, parse, render};
+use sql_er::render;
 use sqlparser::dialect::{
     AnsiDialect, BigQueryDialect, Dialect, DuckDbDialect, GenericDialect, MsSqlDialect,
     MySqlDialect, OracleDialect, PostgreSqlDialect, RedshiftSqlDialect, SQLiteDialect,
@@ -197,20 +197,13 @@ fn run(cli: Cli) -> Result<()> {
     let dialect = cli.dialect.dialect();
     let inputs = read_inputs(&cli.files)?;
 
-    let mut statements = vec![];
-    let mut warnings = vec![];
-    for (name, sql) in &inputs {
-        let (s, w) = parse::parse_statements(dialect.as_ref(), sql);
-        statements.extend(s);
-        warnings.extend(w.into_iter().map(|w| format!("{name}: {}", w.message)));
-    }
-    let mut schema = Schema::default();
-    warnings.extend(
-        parse::add_statements(&mut schema, &statements)
-            .into_iter()
-            .map(|w| w.message),
+    let (mut schema, warnings) = sql_er::schema_from_sql(
+        dialect.as_ref(),
+        inputs
+            .iter()
+            .map(|(name, sql)| (name.as_str(), sql.as_str())),
     );
-    schema.resolve_foreign_keys();
+    let warnings: Vec<String> = warnings.into_iter().map(|w| w.message).collect();
     if cli.infer_fks {
         schema.infer_foreign_keys();
     }

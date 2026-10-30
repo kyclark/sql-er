@@ -16,6 +16,18 @@ pub struct Table {
     pub columns: Vec<Column>,
     /// True for tables that are referenced by a foreign key but never defined.
     pub stub: bool,
+    /// Named primary-key and unique constraints, so that a later
+    /// `DROP CONSTRAINT` can undo them. Not part of the diagram.
+    #[serde(skip)]
+    pub constraints: Vec<NamedConstraint>,
+}
+
+/// A table-level `PRIMARY KEY` or single-column `UNIQUE` constraint with a name.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct NamedConstraint {
+    pub name: String,
+    pub primary_key: bool,
+    pub columns: Vec<String>,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -136,6 +148,137 @@ impl Schema {
                     .retain(|fk| !fk.from_table.eq_ignore_ascii_case(&old.name));
             }
             None => self.tables.push(table),
+        }
+    }
+
+    /// True when `name`, as written in a foreign key, means table `i`.
+    fn refers_to(&self, name: &str, i: usize) -> bool {
+        self.find_table(name) == Some(i)
+    }
+
+    /// Keep the foreign keys for which `keep(self, fk)` is true. The test
+    /// reads the whole schema, so it runs before any key is removed.
+    fn retain_foreign_keys(&mut self, keep: impl Fn(&Schema, &ForeignKey) -> bool) {
+        let keep: Vec<bool> =
+            self.foreign_keys.iter().map(|fk| keep(self, fk)).collect();
+        let mut keep = keep.into_iter();
+        self.foreign_keys.retain(|_| keep.next().unwrap_or(true));
+    }
+
+    /// Remove table `i` and every foreign key from or to it (`DROP TABLE`).
+    pub fn drop_table(&mut self, i: usize) {
+        self.retain_foreign_keys(|s, fk| {
+            !s.refers_to(&fk.from_table, i) && !s.refers_to(&fk.to_table, i)
+        });
+        self.tables.remove(i);
+    }
+
+    /// Rename table `i`, and the foreign keys that name it. An unqualified
+    /// new name stays in the old one's schema, as `ALTER TABLE public.a
+    /// RENAME TO b` does in PostgreSQL.
+    pub fn rename_table(&mut self, i: usize, new_name: &str) {
+        let new_name = match self.tables[i].name.rsplit_once('.') {
+            Some((schema, _)) if !new_name.contains('.') => {
+                format!("{schema}.{new_name}")
+            }
+            _ => new_name.to_string(),
+        };
+        let sides: Vec<(bool, bool)> = self
+            .foreign_keys
+            .iter()
+            .map(|fk| {
+                (
+                    self.refers_to(&fk.from_table, i),
+                    self.refers_to(&fk.to_table, i),
+                )
+            })
+            .collect();
+        for (fk, (from, to)) in self.foreign_keys.iter_mut().zip(sides) {
+            if from {
+                fk.from_table = new_name.clone();
+            }
+            if to {
+                fk.to_table = new_name.clone();
+            }
+        }
+        self.tables[i].name = new_name;
+    }
+
+    /// Remove a column of table `i`, and the foreign keys and named
+    /// constraints that use it.
+    pub fn drop_column(&mut self, i: usize, column: &str) {
+        let has = |cols: &[String]| cols.iter().any(|c| c.eq_ignore_ascii_case(column));
+        self.retain_foreign_keys(|s, fk| {
+            !(s.refers_to(&fk.from_table, i) && has(&fk.from_columns)
+                || s.refers_to(&fk.to_table, i) && has(&fk.to_columns))
+        });
+        let table = &mut self.tables[i];
+        table
+            .columns
+            .retain(|c| !c.name.eq_ignore_ascii_case(column));
+        table.constraints.retain(|c| !has(&c.columns));
+    }
+
+    /// Rename a column of table `i`, in it and in the foreign keys and named
+    /// constraints that use it.
+    pub fn rename_column(&mut self, i: usize, old: &str, new: &str) {
+        let rename = |cols: &mut Vec<String>| {
+            for c in cols.iter_mut().filter(|c| c.eq_ignore_ascii_case(old)) {
+                *c = new.to_string();
+            }
+        };
+        let sides: Vec<(bool, bool)> = self
+            .foreign_keys
+            .iter()
+            .map(|fk| {
+                (
+                    self.refers_to(&fk.from_table, i),
+                    self.refers_to(&fk.to_table, i),
+                )
+            })
+            .collect();
+        for (fk, (from, to)) in self.foreign_keys.iter_mut().zip(sides) {
+            if from {
+                rename(&mut fk.from_columns);
+            }
+            if to {
+                rename(&mut fk.to_columns);
+            }
+        }
+        let table = &mut self.tables[i];
+        if let Some(c) = table.column_mut(old) {
+            c.name = new.to_string();
+        }
+        for constraint in &mut table.constraints {
+            rename(&mut constraint.columns);
+        }
+    }
+
+    /// Undo a named constraint of table `i`: a foreign key, or a primary-key
+    /// or unique constraint recorded in [`Table::constraints`].
+    pub fn drop_constraint(&mut self, i: usize, name: &str) {
+        self.retain_foreign_keys(|s, fk| {
+            !(s.refers_to(&fk.from_table, i)
+                && fk
+                    .name
+                    .as_deref()
+                    .is_some_and(|n| n.eq_ignore_ascii_case(name)))
+        });
+        let table = &mut self.tables[i];
+        let (dropped, kept): (Vec<_>, Vec<_>) = std::mem::take(&mut table.constraints)
+            .into_iter()
+            .partition(|c| c.name.eq_ignore_ascii_case(name));
+        table.constraints = kept;
+        for constraint in dropped {
+            for col in &constraint.columns {
+                if let Some(c) = table.column_mut(col) {
+                    if constraint.primary_key {
+                        c.primary_key = false;
+                    } else {
+                        c.unique = false;
+                    }
+                }
+            }
         }
     }
 
@@ -348,7 +491,7 @@ mod tests {
         Table {
             name: name.into(),
             columns: cols,
-            stub: false,
+            ..Default::default()
         }
     }
 

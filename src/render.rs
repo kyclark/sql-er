@@ -1,7 +1,7 @@
 //! Render DOT to an image by running GraphViz.
 
 use anyhow::{Context, Result, bail};
-use std::io::{Read, Write};
+use std::io::Write;
 use std::path::Path;
 use std::process::{Command, Stdio};
 
@@ -27,31 +27,22 @@ pub fn graphviz(
             )
         })?;
 
-    // Write on another thread so a large diagram can't deadlock on full pipes.
+    // Write on another thread, and read stdout and stderr together
+    // (wait_with_output), so that no full pipe can deadlock a large diagram:
+    // reading one to the end first hangs once GraphViz fills the other.
     let mut stdin = child.stdin.take().expect("piped stdin");
     let input = dot.to_owned();
     let writer = std::thread::spawn(move || stdin.write_all(input.as_bytes()));
 
-    let mut stdout = vec![];
-    child
-        .stdout
-        .take()
-        .expect("piped stdout")
-        .read_to_end(&mut stdout)?;
-    let mut stderr = String::new();
-    child
-        .stderr
-        .take()
-        .expect("piped stderr")
-        .read_to_string(&mut stderr)?;
-    let status = child.wait()?;
+    let output = child.wait_with_output()?;
     writer.join().expect("writer thread panicked")?;
 
-    if !status.success() {
-        bail!("GraphViz failed ({status}): {}", stderr.trim());
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    if !output.status.success() {
+        bail!("GraphViz failed ({}): {}", output.status, stderr.trim());
     }
     if !stderr.trim().is_empty() {
         eprintln!("graphviz: {}", stderr.trim());
     }
-    Ok(stdout)
+    Ok(output.stdout)
 }
